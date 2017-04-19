@@ -43,7 +43,7 @@ public:
     static bool RtFromEssentialMatrix(const Matx33d &E, const Matx33d &K0, const Matx33d &K1, const vector<Point2d> &pts0, const vector<Point2d> &pts1, Matx33d &R, Vec3d &t);
     static bool RtFromEssentialMatrix(const Matx33f &E, const Matx33f &K0, const Matx33f &K1, const vector<Point2f> &pts0, const vector<Point2f> &pts1, Matx33d &R, Vec3d &t);
     static bool RtFromHomographyMatrix(const Matx33f &H, const Matx33f &K0, const Matx33f &K1, const vector<Point2f> &pts0, const vector<Point2f> &pts1, Matx33d &R, Vec3d &t);
-    static void calculateFundamentalMatrix(const Matx33d &K0, const Matx33d &R0, const Matx31d t0, const Matx33d &K1, const Matx33d &R1, const Matx31d &t1, Matx33d &F);
+    static void calculateFundamentalMatrix(const Matx33d &K0, const Matx33d &R0, const Matx31d &t0, const Matx33d &K1, const Matx33d &R1, const Matx31d &t1, Matx33d &F);
     static Matx33d getSkewSymmetric(const Matx31d &v);
     
     //projection errors
@@ -58,6 +58,7 @@ public:
     static int filterMatches(const Matx33d &F, const vector<Point2d> &pts0, const vector<Point2d> &pts1, vector<uchar> &status, double distThreshold);
     static int filterMatches(const Matx33f &F, const vector<Point2f> &pts0, const vector<Point2f> &pts1, vector<uchar> &status, double distThreshold);
     static int filterMatches(const Matx33f &F, const vector<Point2f> &pts0, const vector<Point2f> &pts1, vector<Matx31d> &pts3D, vector<uchar> &status, double distThreshold);
+    static int filterMatches(const Matx33d &F, const vector<Point2d> &pts0, const vector<Point2d> &pts1, vector<Matx31d> &pts3D, vector<uchar> &status, double distThreshold);
     
     //geometry operations
     static double distancePointLine2D(const Point2d &pt, const Vec3d &l);

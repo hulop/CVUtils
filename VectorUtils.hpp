@@ -36,8 +36,7 @@ class VectorUtils {
 public:
     
     //sorts vector and returns vector with original position indices
-    template<typename T>
-    static vector<size_t> sort_indexes(const vector<T> &v);
+    static vector<size_t> sort_indexes(const vector<double> &v);
     
     //sorts vector according to vector of indices. The vector of indices is destroyed
     template< typename order_iterator, typename value_iterator >

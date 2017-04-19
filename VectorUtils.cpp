@@ -22,8 +22,7 @@
 
 #include "VectorUtils.hpp"
 
-template <typename T>
-vector<size_t> VectorUtils::sort_indexes(const vector<T> &v) {
+vector<size_t> VectorUtils::sort_indexes(const vector<double> &v) {
     
     // initialize original index locations
     vector<size_t> idx(v.size());

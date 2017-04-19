@@ -413,7 +413,7 @@ float GeometryUtils::calculateHomographyAvgError(const vector<Point2f> &pts0, co
     return e/count;
 }
 
-void GeometryUtils::calculateFundamentalMatrix(const Matx33d &K0, const Matx33d &R0, const Matx31d t0, const Matx33d &K1, const Matx33d &R1, const Matx31d &t1, Matx33d &F) {
+void GeometryUtils::calculateFundamentalMatrix(const Matx33d &K0, const Matx33d &R0, const Matx31d &t0, const Matx33d &K1, const Matx33d &R1, const Matx31d &t1, Matx33d &F) {
     
     //calculate projection matrices
     Matx34d Rt0(R0(0,0), R0(0,1), R0(0,2), t0(0), R0(1,0), R0(1,1), R0(1,2), t0(1), R0(2,0), R0(2,1), R0(2,2), t0(2));
@@ -434,6 +434,7 @@ void GeometryUtils::calculateFundamentalMatrix(const Matx33d &K0, const Matx33d 
     F =  ex1*P1*Ppi0;
     F *= 1.0/F(2,2);
 }
+
 
 Matx33d GeometryUtils::getSkewSymmetric(const Matx31d &v) {
     return Matx33d (0,-v(2),v(1),v(2),0,-v(0),-v(1),v(0),0);
@@ -543,6 +544,36 @@ int GeometryUtils::filterMatches(const Matx33f &F, const vector<Point2f> &pts0, 
     
     //compute epipolar lines
     vector<Vec3f> epiLines0, epiLines1;
+    computeCorrespondEpilines(pts0, 1, F, epiLines1);
+    computeCorrespondEpilines(pts1, 2, F, epiLines0);
+    
+    //square threshold since we compute the square distance
+    double sqThreshold = distThreshold*distThreshold;
+    
+    //check if the symmetric transfer error is too high for each point
+    float e01,e10;
+    int count = 0;
+    for (int i = 0; i < pts0.size(); i++) {
+        //compute distance from epilines
+        e01 = GeometryUtils::distancePointLine2D(pts0[i], epiLines0[i]);
+        e10 = GeometryUtils::distancePointLine2D(pts1[i], epiLines1[i]);
+        if ((0.5*(e01+e10) >= sqThreshold) || (pts3D[i](2) <= 1.0)) { //check also that point is in front of the camera
+            status.push_back(0);
+            count++;
+        }
+        else {
+            status.push_back(1);
+        }
+    }
+    return count;
+}
+
+
+int GeometryUtils::filterMatches(const Matx33d &F, const vector<Point2d> &pts0, const vector<Point2d> &pts1, vector<Matx31d> &pts3D, vector<uchar> &status, double distThreshold) {
+    
+    //compute epipolar lines
+    vector<Vec3d> epiLines0, epiLines1;
+    Matx33f Fhat = F;
     computeCorrespondEpilines(pts0, 1, F, epiLines1);
     computeCorrespondEpilines(pts1, 2, F, epiLines0);
     
