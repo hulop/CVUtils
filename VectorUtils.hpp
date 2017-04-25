@@ -45,8 +45,7 @@ public:
     //sorts vector according to vector of indices.
     template< typename order_iterator, typename value_iterator >
     void reorder_index( order_iterator order_begin, order_iterator order_end, value_iterator v);
-    
-    //filters a variable number of vectors according to their 
+
     
 };
 
