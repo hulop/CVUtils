@@ -141,10 +141,7 @@ Mat Display2D::display3DProjections(const cv::Mat &img, const Matx33d &K, const 
         if ((pt2D(0) >= 0) && (pt2D(0) < img.cols) && (pt2D(1) >= 0) && (pt2D(1) < img.rows)) {
             pts2D.push_back(Point2d(pt2D(0),pt2D(1)));
             circle(dShow, Point2d(pt2D(0),pt2D(1)), radius, colour, -1, CV_AA );
-        } else {
-            cout << "Point outside frame" << endl;
-            
-        }
+        } 
     }
     
     //scale down
