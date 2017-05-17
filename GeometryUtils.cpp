@@ -104,6 +104,36 @@ void GeometryUtils::projectPoints(const Matx34d &P, const Matx33d &K, const vect
     }
 }
 
+void GeometryUtils::projectPoints(const Matx33d &R, const Matx31d &t, const Matx33d &K, const vector<Matx31d> &pts3D, vector<Point2d> &pts2D) {
+    
+    Matx34d P;
+    P << R(0,0), R(0,1), R(0,2), t(0), R(1,0), R(1,1), R(1,2), t(1), R(2,0), R(2,1), R(2,2), t(2);
+    
+    projectPoints(P, K, pts3D, pts2D);
+}
+
+Point2d GeometryUtils::projectPoint(const Matx33d &R, const Matx31d &t, const Matx33d &K, const Matx31d &pt3D) {
+    
+    Matx34d P;
+    P << R(0,0), R(0,1), R(0,2), t(0), R(1,0), R(1,1), R(1,2), t(1), R(2,0), R(2,1), R(2,2), t(2);
+    
+    return projectPoint(P, K, pt3D);
+}
+
+Point2d GeometryUtils::projectPoint(const Matx34d &P, const Matx33d &K, const Matx31d &pt3D) {
+    
+    Matx34d Pmat = K*P;
+    Matx31d pt =Pmat*Matx41d(pt3D.val[0],pt3D.val[1],pt3D.val[2],1.0);
+    Point2d res(pt.val[0]/pt.val[2],pt.val[1]/pt.val[2]);
+    return res;
+}
+
+Point2d GeometryUtils::projectPoint(const Matx34d &P, const Matx33d &K, const double *pt3D) {
+    Matx34d Pmat = K*P;
+    Matx31d pt =Pmat*Matx41d(pt3D[0],pt3D[1],pt3D[2],1.0);
+    Point2d res(pt.val[0]/pt.val[2],pt.val[1]/pt.val[2]);
+    return res;
+}
 
 bool GeometryUtils::RtFromEssentialMatrix(const Matx33d &E, const Matx33d &K0, const Matx33d &K1, const vector<Point2d> &pts0, const vector<Point2d> &pts1,Matx33d &R, Vec3d &t) {
     //find SVD of the essential matrix
