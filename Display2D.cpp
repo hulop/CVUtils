@@ -200,3 +200,58 @@ Mat Display2D::displayEpipolarLines(const cv::Mat &img0, const cv::Mat &img1, co
     
     return dShow_small;
 }
+
+
+Mat Display2D::drawCubeWireframe(const Mat &img, const Matx33d &K, const Matx34d &P, const vector<Matx31d> &frontFace, const vector<Matx31d> &backFace, int thickness, Scalar colour, float scale) {
+    
+    //set input
+    Mat dShow;
+    if (img.channels() == 3)
+        dShow = img.clone();
+    else
+        cvtColor(img,dShow,CV_GRAY2BGR);
+    
+    if ((frontFace.size() == 4) && (backFace.size() == 4)) {
+        //project cube points onto image plane
+        vector<Point2d> front2D, back2D;
+        GeometryUtils::projectPoints(P, K, frontFace, front2D);
+        GeometryUtils::projectPoints(P, K, backFace, back2D);
+    
+        //display lines
+        for (int i = 0; i < 4; i++) {
+            int nextPtIdx = (i+1) % 4;
+            line(dShow, front2D[i], front2D[nextPtIdx], colour, thickness, CV_AA);
+            line(dShow, back2D[i], back2D[nextPtIdx], colour, thickness, CV_AA);
+            line(dShow, front2D[i], back2D[i], colour, thickness, CV_AA);
+        }
+    
+    }
+    //scale down
+    Mat dShow_small;
+    resize(dShow, dShow_small, Size(round(scale*dShow.cols), round(scale*dShow.rows)));
+    
+    return dShow_small;
+}
+
+Mat Display2D::drawRotatedRectangle(const Mat &img, const RotatedRect &rect, int thickness, Scalar colour, float scale) {
+    //set input
+    Mat dShow;
+    if (img.channels() == 3)
+        dShow = img.clone();
+    else
+        cvtColor(img,dShow,CV_GRAY2BGR);
+    
+    Point2f vtx[4], center;
+    rect.points(vtx);
+    center = rect.center;
+    for (int i = 0; i < 4; i++) {
+        line(dShow, vtx[i], vtx[(i+1)%4], colour, thickness, LINE_AA);
+    }
+    circle(dShow, center, thickness, colour, -1, CV_AA);
+    
+    //scale down
+    Mat dShow_small;
+    resize(dShow, dShow_small, Size(round(scale*dShow.cols), round(scale*dShow.rows)));
+    
+    return dShow_small;
+}

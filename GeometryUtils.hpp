@@ -37,8 +37,9 @@ public:
     static void triangulatePoints(const Matx34d &P0, const Matx34d &P1, const Matx33d &K0, const Matx33d &K1, const vector<Point2f> &f0, const vector<Point2f> &f1, vector<Matx31d> &outPts);
     
     //projection
-    static void projectPoints(const Matx34d &P, const Matx33d& K, const vector<Matx31d> &pts3D, vector<Point2d> &pts2D);
-    static void projectPoints(const Matx33d &R, const Matx31d& t, const Matx33d& K, const vector<Matx31d> &pts3D, vector<Point2d> &pts2D);
+    static void projectPoints(const Matx34d &P, const Matx33d& K, const vector<Matx31d> &pts3D, vector<Point2d> &pts2D, Size imSize = Size(0,0));
+    static void projectPoints(const Matx34d &P, const Matx33d& K, const vector<Matx31d> &pts3D, vector<Point2i> &pts2D, Size imSize = Size(0,0));
+    static void projectPoints(const Matx33d &R, const Matx31d& t, const Matx33d& K, const vector<Matx31d> &pts3D, vector<Point2d> &pts2D, Size imSize = Size(0,0));
     static Point2d projectPoint(const Matx33d &R, const Matx31d &t, const Matx33d &K, const Matx31d &pt3D);
     static Point2d projectPoint(const Matx34d &P, const Matx33d &K, const Matx31d &pt3D);
     static Point2d projectPoint(const Matx34d &P, const Matx33d &K, const double* pt3D);

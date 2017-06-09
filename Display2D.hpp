@@ -24,8 +24,7 @@
 #define Display2D_hpp
 
 #include <stdio.h>
-#include <opencv2/opencv.hpp>
-
+#include "GeometryUtils.hpp"
 
 
 using namespace std;
@@ -47,7 +46,10 @@ public:
     static Mat display3DProjections(const Mat &img, const Matx33d &K, const Matx33d &R, const Matx31d &t, const vector<Matx31d> &pts, int radius = 3, Scalar colour = Scalar(255,0,0), float scale = 0.5);
     
     static Mat displayEpipolarLines(const cv::Mat &img0, const cv::Mat &img1, const Matx33d &F, const vector<Point2d> pts, int pts0or1, int nFeatures = 10, int radius = 3, Scalar colour = Scalar(255,0,0), float scale = 0.5);
+    
+    static Mat drawCubeWireframe(const Mat &img, const Matx33d &K, const Matx34d &P, const vector<Matx31d> &frontFace, const vector<Matx31d> &backFace, int thickness = 1, Scalar colour = Scalar(255,255,255), float scale = 0.5);
 
+    static Mat drawRotatedRectangle(const Mat &img, const RotatedRect &rect, int thickness = 1, Scalar colour = Scalar(255,255,255), float scale = 0.5);
 };
 
 #endif /* Display2D_hpp */

@@ -94,22 +94,52 @@ void GeometryUtils::triangulatePoints(const Matx34d &P0, const Matx34d &P1, cons
     }
 }
 
-void GeometryUtils::projectPoints(const Matx34d &P, const Matx33d &K, const vector<Matx31d> &pts3D, vector<Point2d> &pts2D) {
+void GeometryUtils::projectPoints(const Matx34d &P, const Matx33d &K, const vector<Matx31d> &pts3D, vector<Point2d> &pts2D, Size imSize) {
     
     Matx34d Pmat = K*P;
-    for (int i = 0; i < pts3D.size(); i++) {
-        //project point to 2d
-        Matx31d pt = Pmat*Matx41d(pts3D[i].val[0],pts3D[i].val[1],pts3D[i].val[2],1.0);
-        pts2D.push_back(Point2d(pt.val[0]/pt.val[2],pt.val[1]/pt.val[2]));
+    
+    if ((imSize.width == 0) && (imSize.height == 0)) {
+        for (int i = 0; i < pts3D.size(); i++) {
+            //project point to 2d
+            Matx31d pt = Pmat*Matx41d(pts3D[i].val[0],pts3D[i].val[1],pts3D[i].val[2],1.0);
+            pts2D.push_back(Point2d(pt.val[0]/pt.val[2],pt.val[1]/pt.val[2]));
+        }
+    } else {
+        for (int i = 0; i < pts3D.size(); i++) {
+            //project point to 2d
+            Matx31d pt = Pmat*Matx41d(pts3D[i].val[0],pts3D[i].val[1],pts3D[i].val[2],1.0);
+            Point2d pt2d(pt.val[0]/pt.val[2],pt.val[1]/pt.val[2]);
+            if ((pt2d.x >= 0) && (pt2d.x < imSize.width) && (pt2d.y >= 0) && (pt2d.y < imSize.height))
+                pts2D.push_back(pt2d);
+        }
     }
 }
 
-void GeometryUtils::projectPoints(const Matx33d &R, const Matx31d &t, const Matx33d &K, const vector<Matx31d> &pts3D, vector<Point2d> &pts2D) {
+void GeometryUtils::projectPoints(const Matx34d &P, const Matx33d& K, const vector<Matx31d> &pts3D, vector<Point2i> &pts2D, Size imSize) {
+    Matx34d Pmat = K*P;
+    if ((imSize.width == 0) && (imSize.height == 0)) {
+        for (int i = 0; i < pts3D.size(); i++) {
+            //project point to 2d
+            Matx31d pt = Pmat*Matx41d(pts3D[i].val[0],pts3D[i].val[1],pts3D[i].val[2],1.0);
+            pts2D.push_back(Point2d(pt.val[0]/pt.val[2],pt.val[1]/pt.val[2]));
+        }
+    } else {
+        for (int i = 0; i < pts3D.size(); i++) {
+            //project point to 2d
+            Matx31d pt = Pmat*Matx41d(pts3D[i].val[0],pts3D[i].val[1],pts3D[i].val[2],1.0);
+            Point2i pt2d = Point2i(round(pt.val[0]/pt.val[2]),round(pt.val[1]/pt.val[2]));
+            if ((pt2d.x >= 0) && (pt2d.x < imSize.width) && (pt2d.y >= 0) && (pt2d.y < imSize.height))
+                pts2D.push_back(pt2d);
+        }
+    }
+}
+
+void GeometryUtils::projectPoints(const Matx33d &R, const Matx31d &t, const Matx33d &K, const vector<Matx31d> &pts3D, vector<Point2d> &pts2D, Size imSize) {
     
     Matx34d P;
     P << R(0,0), R(0,1), R(0,2), t(0), R(1,0), R(1,1), R(1,2), t(1), R(2,0), R(2,1), R(2,2), t(2);
     
-    projectPoints(P, K, pts3D, pts2D);
+    projectPoints(P, K, pts3D, pts2D, imSize);
 }
 
 Point2d GeometryUtils::projectPoint(const Matx33d &R, const Matx31d &t, const Matx33d &K, const Matx31d &pt3D) {
